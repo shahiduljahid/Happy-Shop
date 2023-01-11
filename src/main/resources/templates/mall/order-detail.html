@@ -1,0 +1,283 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="mall/header::head-fragment('NewBee商城-订单详情','order-detail')">
+</head>
+<link rel="stylesheet" th:href="@{/admin/plugins/sweetalert/sweetalert.css}"/>
+<body>
+<header th:replace="mall/header::header-fragment"></header>
+<!-- nav -->
+<nav th:replace="mall/header::nav-fragment"></nav>
+
+<!-- personal -->
+<div id="personal">
+    <div class="self-info center">
+
+        <!-- sidebar -->
+        <div th:replace="mall/personal-sidebar::sidebar-fragment"></div>
+
+        <div class="intro fr">
+            <div class="uc-box uc-main-box">
+                <div class="uc-content-box order-view-box">
+                    <div class="box-hd">
+                        <h1 class="title">Order details
+                            <small>Beware of phishing links or scam calls,<a href="##">learn more&gt;</a>
+                            </small>
+                        </h1>
+                        <div class="more clearfix">
+                            <h2 class="subtitle">Order number:
+                                <th:block th:text="${orderDetailVO.orderNo}"></th:block>
+                                <span class="tag tag-subsidy"></span>
+                            </h2>
+                            <div class="actions">
+                                <input type="hidden" id="orderNoValue" th:value="${orderDetailVO.orderNo}">
+                                <th:block th:if="${orderDetailVO.orderStatus>0 and orderDetailVO.orderStatus<3}">
+                                    <a onclick="cancelOrder()"
+                                       class="btn btn-small btn-line-gray" title="取消订单">Cancel order</a>
+                                </th:block>
+                                <th:block th:if="${orderDetailVO.orderStatus==0}">
+                                    <a onclick="payOrder()"
+                                       class="btn btn-small btn-primary" title="去支付">To pay</a>
+                                </th:block>
+                                <th:block th:if="${orderDetailVO.orderStatus==3}">
+                                    <a onclick="finishOrder()"
+                                       class="btn btn-small btn-primary" title="确认收货">Confirm the receipt of goods</a>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-bd">
+                        <div class="uc-order-item uc-order-item-pay">
+                            <div class="order-detail">
+
+                                <div class="order-summary">
+                                    <div class="order-status" th:text="${orderDetailVO.orderStatusString}">
+                                        Happy Shop
+                                    </div>
+                                    <div class="order-desc">
+                                        <th:block th:if="${orderDetailVO.orderStatus==0}">Please complete the payment as soon as possible~</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==1}">Happy Shop order confirmation~</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==2}">The Happy Shop warehouse is in urgent distribution~</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==3}">The order has been shipped and is rushing to you~</th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus==4}">The transaction is successful, thank you for your support to Happy Shop mall~
+                                        </th:block>
+                                        <th:block th:if="${orderDetailVO.orderStatus<0}">The transaction is closed~</th:block>
+
+                                    </div>
+                                    <th:block th:if="${orderDetailVO.orderStatus>=0}">
+                                        <div class="order-progress">
+                                            <ol class="progress-list clearfix progress-list-5">
+                                                <th:block th:if="${orderDetailVO.orderStatus==0}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>0}">
+                                                    <li class="step step-first">
+                                                </th:block>
+                                                <div class="progress"><span class="text">Place an order</span></div>
+                                                <div class="info"
+                                                     th:text="${#dates.format(orderDetailVO.createTime, 'yyyy-MM-dd HH:mm:ss')}">
+                                                    02-07
+                                                </div>
+                                                </li>
+                                                <th:block th:if="${orderDetailVO.orderStatus<1}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus==1}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>1}">
+                                                    <li class="step step-done">
+                                                </th:block>
+                                                <div class="progress"><span class="text">Payment</span></div>
+                                                <div class="info"></div>
+                                                </li>
+                                                <th:block th:if="${orderDetailVO.orderStatus<2}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus==2}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>2}">
+                                                    <li class="step step-done">
+                                                </th:block>
+                                                <div class="progress"><span class="text">Distribution</span></div>
+                                                <div class="info"></div>
+                                                </li>
+                                                <th:block th:if="${orderDetailVO.orderStatus<3}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus==3}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>3}">
+                                                    <li class="step step-done">
+                                                </th:block>
+                                                <div class="progress"><span class="text">Out of warehouse</span></div>
+                                                <div class="info"></div>
+                                                </li>
+                                                <th:block th:if="${orderDetailVO.orderStatus<4}">
+                                                    <li class="step">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus==4}">
+                                                    <li class="step step-active">
+                                                </th:block>
+                                                <th:block th:if="${orderDetailVO.orderStatus>4}">
+                                                    <li class="step step-last">
+                                                </th:block>
+                                                <div class="progress"><span class="text">Successful transaction</span></div>
+                                                <div class="info"></div>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </th:block>
+                                </div>
+                                <table class="order-items-table">
+                                    <tbody>
+                                    <th:block th:each="item : ${orderDetailVO.newBeeMallOrderItemVOS}">
+                                        <tr>
+                                            <td class="col col-thumb">
+                                                <div class="figure figure-thumb">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}">
+                                                        <img th:src="@{'/mall/image'+${item.goodsCoverImg}}"
+                                                             width="80" height="80" alt="">
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="col col-name">
+                                                <p class="name">
+                                                    <a target="_blank" th:href="@{'/goods/detail/'+${item.goodsId}}"
+                                                       th:text="${item.goodsName}">Happy Shop</a>
+                                                </p>
+                                            </td>
+                                            <td class="col col-price"><p class="price"
+                                                                         th:text="${item.sellingPrice+'元 x '+item.goodsCount}">
+                                                1299元 × 1</p></td>
+                                            <td class="col col-actions">
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="editAddr" class="order-detail-info">
+                                <h3>Delivery information</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <td th:text="${orderDetailVO.userAddress}">Happy Shop</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                </div>
+                            </div>
+                            <div id="editTime" class="order-detail-info">
+                                <h3>Payment method</h3>
+                                <table class="info-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Payment method:</th>
+                                        <td th:text="${orderDetailVO.payTypeString==null?'在线支付':orderDetailVO.payTypeString}">
+                                            Online Payment
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="actions">
+                                </div>
+                            </div>
+                            <div class="order-detail-total">
+                                <table class="total-table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Freight:</th>
+                                        <td><span class="num">0</span>元</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="total">Total price of goods:</th>
+                                        <td class="total"><span class="num"
+                                                                th:text="${orderDetailVO.totalPrice+'.00'}">1299.00</span>元
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<div th:replace="mall/footer::footer-fragment"></div>
+<!-- jQuery -->
+<script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+<script type="text/javascript">
+
+    function cancelOrder() {
+        var orderNo = $("#orderNoValue").val();
+        swal({
+            title: "Guest officer please note",
+            text: "Are you sure you want to cancel the order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((flag) => {
+                if (flag) {
+                    $.ajax({
+                        type: 'PUT',
+                        url: '/orders/' + orderNo + '/cancel',
+                        success: function (result) {
+                            if (result.resultCode == 200) {
+                                window.location.reload();
+                            } else {
+                                swal(result.message, {
+                                    icon: "error",
+                                });
+                            }
+                        },
+                        error: function () {
+                            swal("The operation failed", {
+                                icon: "error",
+                            });
+                        }
+                    });
+                }
+            }
+        )
+        ;
+    }
+
+    function payOrder() {
+        var orderNo = $("#orderNoValue").val();
+        window.location.href = '/selectPayType?orderNo=' + orderNo;
+    }
+
+    function finishOrder() {
+        var orderNo = $("#orderNoValue").val();
+        $.ajax({
+            type: 'PUT',
+            url: '/orders/' + orderNo + '/finish',
+            success: function (result) {
+                if (result.resultCode == 200) {
+                    window.location.reload();
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+            },
+            error: function () {
+                swal("The operation failed", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="mall/header::head-fragment('NewBee商城-商品详情','detail')">
+  </head>
+  <body>
+    <header th:replace="mall/header::header-fragment"></header>
+
+    <div id="detail">
+      <!-- nav -->
+      <nav th:replace="mall/header::nav-fragment"></nav>
+
+      <div class="dc">
+        <div class="content w">
+          <div class="title fl">Product Details</div>
+          <div class="clear"></div>
+        </div>
+      </div>
+
+      <div class="intro mt20 w clearfix">
+        <div class="left fl" style="position: relative">
+          <div class="swiper-container fl">
+            <img th:src="@{'/mall/image'+${goodsDetail.goodsCoverImg}}" />
+          </div>
+        </div>
+        <div class="right fr">
+          <div class="h3 ml20 mt20" th:text="${goodsDetail.goodsName}">
+            Happy Shop
+          </div>
+          <div
+            class="sub_title mr40 ml20 mt10"
+            th:text="${goodsDetail.goodsIntro}"
+          >
+            Happy Shop
+          </div>
+          <div class="item_price mr40 ml20 mt10">
+            <th:block th:text="${goodsDetail.sellingPrice}+'.00 元'"></th:block>
+            <del>
+              <th:block
+                th:text="${goodsDetail.originalPrice}+'.00 元'"
+              ></th:block>
+            </del>
+          </div>
+
+          <div class="order">
+            <input
+              class="car"
+              type="button"
+              th:onclick="'saveAndGoCart('+${goodsDetail.goodsId}+')'"
+              value="Shop now"
+            />
+            <input
+              class="car"
+              type="button"
+              th:onclick="'saveToCart('+${goodsDetail.goodsId}+')'"
+              value="Add to the cart"
+            />
+          </div>
+          <div class="tb-extra ml20" id="J_tbExtra">
+            <dl>
+              <dt>Promise</dt>
+              <dd>
+                <a
+                  class="J_Cont"
+                  title="Under the premise of meeting the 7-day no-reason return application, the buyer needs to bear the return postage for free shipping products, and the buyer needs to bear the delivery and return postage for non-free shipping products."
+                  href="#"
+                  target="_blank"
+                  ><img th:src="@{/mall/image/7d.jpg}" />7 days without
+                  reason</a
+                >
+              </dd>
+            </dl>
+            <dl>
+              <dt>To pay</dt>
+              <dd>
+                <a href="##" target="_blank"
+                  ><img th:src="@{/mall/image/hua.png}" />Ant Huabei</a
+                ><a href="##" target="_blank"
+                  ><img th:src="@{/mall/image/card.png}" />Pay by credit card</a
+                >
+              </dd>
+            </dl>
+            <dl>
+              <dt>Support</dt>
+              <dd>
+                Realize depreciation and buy new ones to save money.<a
+                  style="float: none; text-decoration: underline"
+                  href="##"
+                  >Details</a
+                >
+              </dd>
+            </dl>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <!-- 这里使用的是 th:utext 标签，用 th:text 不会解析 html，用 th:utext 会解析 html -->
+      <div
+        class="goods mt20 w clearfix"
+        th:utext="${goodsDetail.goodsDetailContent}"
+      ></div>
+    </div>
+
+    <div th:replace="mall/footer::footer-fragment"></div>
+
+    <!-- jQuery -->
+    <script th:src="@{/admin/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/admin/plugins/sweetalert/sweetalert.min.js}"></script>
+    <script th:src="@{/mall/js/search.js}" type="text/javascript"></script>
+    <script type="text/javascript">
+      /**
+       * 添加到购物车
+       */
+      function saveToCart(id) {
+        var goodsCount = 1;
+        var data = {
+          goodsId: id,
+          goodsCount: goodsCount,
+        };
+        $.ajax({
+          type: "POST",
+          url: "/shop-cart",
+          contentType: "application/json",
+          data: JSON.stringify(data),
+          success: function (result) {
+            if (result.resultCode == 200) {
+              swal({
+                title: "Adeed Successfully",
+                text: "Go to shopping cart to check it out",
+                icon: "success",
+                buttons: true,
+                dangerMode: true,
+              }).then((flag) => {
+                window.location.reload();
+              });
+            } else {
+              swal(result.message, {
+                icon: "error",
+              });
+            }
+          },
+          error: function () {
+            swal("The operation failed", {
+              icon: "error",
+            });
+          },
+        });
+      }
+
+      /**
+       * 添加到购物车并跳转至购物车页面
+       */
+      function saveAndGoCart(id) {
+        var goodsCount = 1;
+        var data = {
+          goodsId: id,
+          goodsCount: goodsCount,
+        };
+        $.ajax({
+          type: "POST",
+          url: "/shop-cart",
+          contentType: "application/json",
+          data: JSON.stringify(data),
+          success: function (result) {
+            if (result.resultCode == 200) {
+              swal({
+                title: "Item has been added to cart",
+                icon: "success",
+                buttons: {
+                  cancel: "Stay on current page",
+                  confirm: "Go to the shopping cart to checkout",
+                },
+                dangerMode: false,
+              }).then((flag) => {
+                if (flag) {
+                  window.location.href = "/shop-cart";
+                }
+              });
+            } else {
+              swal(result.message, {
+                icon: "error",
+              });
+            }
+          },
+          error: function () {
+            swal("The operation failed", {
+              icon: "error",
+            });
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

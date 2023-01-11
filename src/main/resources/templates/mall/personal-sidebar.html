@@ -1,0 +1,22 @@
+<!-- Copyright (c) 2019-2020 十三 all rights reserved. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <div class="lfnav fl" th:fragment="sidebar-fragment">
+    <div class="nav_title">Profile</div>
+    <div class="title_list">
+      <ul>
+        <li>
+          <a th:href="@{'/personal'}" th:class="${path=='personal'?'active':''}"
+            >Personal information</a
+          >
+        </li>
+        <li>
+          <a th:href="@{'/orders'}" th:class="${path=='orders'?'active':''}"
+            >My Order</a
+          >
+        </li>
+        <li><a th:href="@{'/logout'}">Sign out</a></li>
+      </ul>
+    </div>
+  </div>
+</html>
